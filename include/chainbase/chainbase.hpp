@@ -1171,7 +1171,10 @@ namespace chainbase {
 
         index_list_type::const_iterator index_list_end() const;
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wnonnull"
         auto segment_manager() -> decltype(((boost::interprocess::managed_mapped_file *)nullptr)->get_segment_manager());
+#pragma GCC diagnostic pop
 
         void set_read_wait_micro(uint64_t value);
         uint64_t read_wait_micro() const;
