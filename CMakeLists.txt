@@ -12,7 +12,6 @@ list(APPEND BOOST_COMPONENTS thread
         system
         filesystem
         chrono
-        unit_test_framework
         locale)
 
 option(Boost_USE_STATIC_LIBS "Build with Boost static libraries usage" TRUE)

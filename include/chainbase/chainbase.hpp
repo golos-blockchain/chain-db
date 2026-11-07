@@ -306,7 +306,22 @@ namespace chainbase {
         void modify(const value_type& obj, Modifier&& m) {
             on_modify(obj);
 
-            auto ok = _indices.modify(_indices.iterator_to(obj), m);
+            std::exception_ptr std_exception_ptr;
+
+            auto safe_modifier = [&m, &std_exception_ptr](value_type& obj) {
+                try {
+                    m(obj);
+                } catch(...) {
+                    std_exception_ptr = std::current_exception();
+                }
+            };
+
+            auto itr = _indices.iterator_to(obj);
+            auto ok = _indices.modify(itr, safe_modifier);
+
+            if (std_exception_ptr)
+                std::rethrow_exception(std_exception_ptr);
+
             if (!ok) {
                 BOOST_THROW_EXCEPTION(std::logic_error(
                     "Could not modify object, most likely a uniqueness constraint was violated"));
